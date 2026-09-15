@@ -95,7 +95,7 @@ export class SupabaseProvider implements GameService {
     let code = generateRoomCode();
     // Ensure unique code
     for (let i = 0; i < 5; i++) {
-      const { data: existing } = await client.from('rooms').select('id').eq('code', code).single();
+      const { data: existing } = await client.from('rooms').select('id').eq('code', code).maybeSingle();
       if (!existing) break;
       code = generateRoomCode();
     }
@@ -152,7 +152,7 @@ export class SupabaseProvider implements GameService {
   async joinRoom(code: string, playerName: string, playerId: string): Promise<{ room: Room; players: Player[] }> {
     const client = getClient();
 
-    const { data: roomRow } = await client.from('rooms').select('*').eq('code', code.toUpperCase()).single();
+    const { data: roomRow } = await client.from('rooms').select('*').eq('code', code.toUpperCase()).maybeSingle();
     if (!roomRow) throw new Error('Sala não encontrada. Verifique o código e tente novamente.');
 
     const room = mapRoom(roomRow);
@@ -166,7 +166,7 @@ export class SupabaseProvider implements GameService {
       .select('*')
       .eq('room_id', room.id)
       .eq('id', playerId)
-      .single();
+      .maybeSingle();
 
     if (existingPlayer) {
       await client.from('players').update({ is_connected: true, name: playerName }).eq('id', playerId);
@@ -226,7 +226,7 @@ export class SupabaseProvider implements GameService {
 
   async getRoom(code: string): Promise<Room | null> {
     const client = getClient();
-    const { data } = await client.from('rooms').select('*').eq('code', code.toUpperCase()).single();
+    const { data } = await client.from('rooms').select('*').eq('code', code.toUpperCase()).maybeSingle();
     return data ? mapRoom(data) : null;
   }
 
@@ -327,7 +327,7 @@ export class SupabaseProvider implements GameService {
     if (players[expectedIndex].id !== playerId) throw new Error('Não é sua vez de escolher.');
 
     // Check duplicate
-    const { data: existingPick } = await client.from('picks').select('id').eq('room_id', roomId).eq('option_id', optionId).single();
+    const { data: existingPick } = await client.from('picks').select('id').eq('room_id', roomId).eq('option_id', optionId).maybeSingle();
     if (existingPick) throw new Error('Esta opção já foi escolhida.');
 
     const pickId = crypto.randomUUID();
