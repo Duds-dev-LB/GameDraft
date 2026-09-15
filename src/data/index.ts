@@ -15,6 +15,7 @@ export function getOptionsForCategory(category: DraftCategory): DraftOptionTempl
     case 'games':
       return gameCharacters;
     case 'characters':
+    case 'fiction':
       return fictionCharacters;
     case 'custom':
     default:

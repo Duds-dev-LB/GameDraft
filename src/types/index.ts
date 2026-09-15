@@ -8,7 +8,7 @@ export type RoomStatus = 'lobby' | 'drafting' | 'finished' | 'closed';
 
 export type DraftMode = 'classic' | 'snake';
 
-export type DraftCategory = 'football' | 'nba' | 'games' | 'characters' | 'custom';
+export type DraftCategory = 'football' | 'nba' | 'games' | 'characters' | 'fiction' | 'custom';
 
 export type TimeLimitSeconds = 0 | 15 | 30 | 45 | 60;
 
